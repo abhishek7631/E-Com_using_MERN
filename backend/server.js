@@ -1,10 +1,17 @@
 const express = require("express");
 const colors = require("colors");
 const dotenv = require("dotenv");
+const morgan = require("morgan");
+const connect = require("./config/db");
 
 dotenv.config();
 
+connect();
+
 const app = express();
+
+app.use(express.json());
+app.use(morgan("dev"));
 
 const PORT = process.env.PORT;
 
