@@ -3,6 +3,7 @@ const colors = require("colors");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const connect = require("./config/db");
+const authRoute = require("./routes/authRoute");
 
 dotenv.config();
 
@@ -12,6 +13,8 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
+
+app.use("/api/v1/auth", authRoute);
 
 const PORT = process.env.PORT;
 
