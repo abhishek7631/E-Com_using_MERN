@@ -107,3 +107,9 @@ exports.loginController = async (req, res) => {
     });
   }
 };
+
+//test controller
+
+exports.testController = (req, res) => {
+  res.status(200).send({ message: "This is protected route" });
+};
