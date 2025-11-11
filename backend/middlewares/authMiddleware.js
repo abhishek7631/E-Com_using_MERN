@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const userModel = require("../models/user");
 
 exports.requireSignIn = async (req, res, next) => {
   try {
@@ -6,6 +7,8 @@ exports.requireSignIn = async (req, res, next) => {
       req.headers.authorization,
       process.env.JWT_SECRET
     );
+
+    req.user = decode;
 
     next();
   } catch (error) {
@@ -17,7 +20,21 @@ exports.requireSignIn = async (req, res, next) => {
 
 exports.isAdmin = async (req, res, next) => {
   try {
+    const user = await userModel.findById(req.user._id);
+    if (user.role !== 1) {
+      return res.status(401).send({
+        success: false,
+        message: "Unauthorized Access",
+      });
+    } else {
+      next();
+    }
   } catch (error) {
     console.log(error);
+    res.status(401).send({
+      success: false,
+      error,
+      message: "Error in admin middleware",
+    });
   }
 };
