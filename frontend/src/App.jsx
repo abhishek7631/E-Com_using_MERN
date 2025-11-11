@@ -1,9 +1,12 @@
 import React from "react";
+import Layout from "./components/Layout/Layout";
 
 function App() {
   return (
     <>
-      <h1>Ecommerce App</h1>
+      <Layout>
+        <h1>Ecommerce App</h1>
+      </Layout>
     </>
   );
 }
