@@ -1,24 +1,44 @@
 import React, { useState } from "react";
 import Layout from "./../../components/Layout/Layout";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "../../styles/AuthStyles.css";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [addres, setAddress] = useState("");
+  const [address, setAddress] = useState("");
 
-  function handleSubmit(e) {
+  const navigate = useNavigate();
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    toast.success("Register successfully");
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/register`,
+        { name, email, password, phone, address }
+      );
+
+      if (res.data.success) {
+        toast.success(res.data.message);
+        navigate("/login");
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    }
   }
 
   return (
     <Layout title="Register - Ecommerce App">
-      <div className="register">
-        <h1>Register Page</h1>
+      <div className="form-container">
         <form onSubmit={handleSubmit}>
+          <h4 className="title">REGISTER FORM</h4>
           <div className="mb-3">
             {/* <label htmlFor="exampleInputName" className="form-label">
               Name
@@ -76,14 +96,14 @@ const Register = () => {
               className="form-control"
               id="exampleInputAddress"
               placeholder="Enter Your Address"
-              value={addres}
+              value={address}
               onChange={(e) => setAddress(e.target.value)}
               required
             />
           </div>
 
           <button type="submit" className="btn btn-primary">
-            Submit
+            REGISTER
           </button>
         </form>
       </div>
