@@ -12,7 +12,7 @@ export default function PrivateRoute() {
   useEffect(() => {
     const authCheck = async () => {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth-user`,
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/user-auth`,
         {
           headers: {
             Authorization: auth?.token,
