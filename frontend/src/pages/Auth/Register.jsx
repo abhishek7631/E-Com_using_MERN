@@ -11,6 +11,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [answer, setAnswer] = useState("");
 
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ const Register = () => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/v1/auth/register`,
-        { name, email, password, phone, address }
+        { name, email, password, phone, address, answer }
       );
 
       if (res.data.success) {
@@ -98,6 +99,18 @@ const Register = () => {
               placeholder="Enter Your Address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <input
+              type="text"
+              className="form-control"
+              id="exampleInputAddress"
+              placeholder="What is your favorite sports"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
               required
             />
           </div>
