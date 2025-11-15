@@ -34,6 +34,4 @@ const Spinner = ({ path = "login" }) => {
   );
 };
 
-//this is changement
-
 export default Spinner;
