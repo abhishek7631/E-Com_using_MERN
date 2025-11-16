@@ -6,6 +6,7 @@ const {
   getSingleProduct,
   productPhotoController,
   deleteProductController,
+  updateProductController,
 } = require("../controllers/productController");
 
 const formidable = require("express-formidable");
@@ -18,6 +19,16 @@ router.post(
   isAdmin,
   formidable(),
   createProductController
+);
+
+//update product
+
+router.put(
+  "/update-product/:pid",
+  requireSignIn,
+  isAdmin,
+  formidable(),
+  updateProductController
 );
 
 //get products
