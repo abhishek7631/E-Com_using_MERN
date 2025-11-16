@@ -4,6 +4,7 @@ const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 const {
   createCategoryController,
   updateCategoryController,
+  categoryController,
 } = require("../controllers/categoryController");
 
 const router = express.Router();
@@ -24,5 +25,9 @@ router.put(
   isAdmin,
   updateCategoryController
 );
+
+//get all category
+
+router.get("/get-category", categoryController);
 
 module.exports = router;
