@@ -5,6 +5,7 @@ const {
   createCategoryController,
   updateCategoryController,
   categoryController,
+  singleCategoryController,
 } = require("../controllers/categoryController");
 
 const router = express.Router();
@@ -29,5 +30,9 @@ router.put(
 //get all category
 
 router.get("/get-category", categoryController);
+
+//single category
+
+router.get("/single-category/:slug", singleCategoryController);
 
 module.exports = router;
