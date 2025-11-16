@@ -41,13 +41,11 @@ exports.createProductController = async (req, res) => {
 
     await product.save();
 
-    res
-      .status(200)
-      .send({
-        success: true,
-        message: "Product created successfully",
-        product,
-      });
+    res.status(200).send({
+      success: true,
+      message: "Product created successfully",
+      product,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -55,5 +53,24 @@ exports.createProductController = async (req, res) => {
       error,
       message: "Error while create product",
     });
+  }
+};
+
+//get all products
+
+exports.getProductController = async (req, res) => {
+  try {
+    const product = await productModel
+      .find({})
+      .select("-photo")
+      .limit(12)
+      .sort({ createdAt: -1 });
+
+    res.status(200).send({ success: true, message: "All Products", product });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ success: false, message: "Error in getting products", error });
   }
 };
