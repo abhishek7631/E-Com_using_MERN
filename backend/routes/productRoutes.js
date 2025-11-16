@@ -5,6 +5,7 @@ const {
   getProductController,
   getSingleProduct,
   productPhotoController,
+  deleteProductController,
 } = require("../controllers/productController");
 
 const formidable = require("express-formidable");
@@ -30,5 +31,9 @@ router.get("/get-product/:slug", getSingleProduct);
 //get photo
 
 router.get("/product-photo/:pid", productPhotoController);
+
+//delete product
+
+router.delete("/product/:pid", deleteProductController);
 
 module.exports = router;
