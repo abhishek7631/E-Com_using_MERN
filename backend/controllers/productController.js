@@ -62,15 +62,42 @@ exports.getProductController = async (req, res) => {
   try {
     const product = await productModel
       .find({})
+      .populate("category")
       .select("-photo")
       .limit(12)
       .sort({ createdAt: -1 });
 
-    res.status(200).send({ success: true, message: "All Products", product });
+    res.status(200).send({
+      success: true,
+      countTotal: product.length,
+      message: "All Products",
+      product,
+    });
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .send({ success: false, message: "Error in getting products", error });
+  }
+};
+
+//get single product
+
+exports.getSingleProduct = async (req, res) => {
+  try {
+    const product = await productModel
+      .findOne({ slug: req.params.slug })
+      .select("-photo")
+      .populate("category");
+    res
+      .status(200)
+      .send({ success: true, message: "Single product Fetched", product });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while getting single product",
+      error,
+    });
   }
 };

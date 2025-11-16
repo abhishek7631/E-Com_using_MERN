@@ -3,6 +3,7 @@ const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 const {
   createProductController,
   getProductController,
+  getSingleProduct,
 } = require("../controllers/productController");
 
 const formidable = require("express-formidable");
@@ -20,5 +21,9 @@ router.post(
 //get products
 
 router.get("/get-product", getProductController);
+
+//single product
+
+router.get("/get-product/:slug", getSingleProduct);
 
 module.exports = router;
