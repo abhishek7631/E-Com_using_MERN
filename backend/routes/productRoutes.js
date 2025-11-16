@@ -4,6 +4,7 @@ const {
   createProductController,
   getProductController,
   getSingleProduct,
+  productPhotoController,
 } = require("../controllers/productController");
 
 const formidable = require("express-formidable");
@@ -25,5 +26,9 @@ router.get("/get-product", getProductController);
 //single product
 
 router.get("/get-product/:slug", getSingleProduct);
+
+//get photo
+
+router.get("/product-photo/:pid", productPhotoController);
 
 module.exports = router;
