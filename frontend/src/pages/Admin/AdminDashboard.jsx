@@ -26,6 +26,4 @@ const AdminDashboard = () => {
   );
 };
 
-//changes
-
 export default AdminDashboard;
