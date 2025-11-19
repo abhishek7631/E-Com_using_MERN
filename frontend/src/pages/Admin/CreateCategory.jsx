@@ -98,8 +98,10 @@ const CreateCategory = () => {
             <Modal
               onCancel={() => setVisible(false)}
               footer={null}
-              visible={visible}
-            ></Modal>
+              open={visible}
+            >
+              <CategoryForm />
+            </Modal>
           </div>
         </div>
       </div>
