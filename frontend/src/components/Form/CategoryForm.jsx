@@ -2,7 +2,7 @@ import React from "react";
 
 const CategoryForm = ({ handleSubmit, value, setValue }) => {
   return (
-    <>
+    <div>
       <>
         <form onSubmit={handleSubmit}>
           <div class="mb-3">
@@ -20,7 +20,7 @@ const CategoryForm = ({ handleSubmit, value, setValue }) => {
           </button>
         </form>
       </>
-    </>
+    </div>
   );
 };
 

@@ -3,12 +3,16 @@ import Layout from "../../components/Layout/Layout";
 import AdminMenu from "../../components/Layout/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
+
+import { Modal } from "antd";
 import CategoryForm from "../../components/Form/CategoryForm";
 
 const CreateCategory = () => {
   const [categories, setCategories] = useState([]);
 
   const [name, setName] = useState("");
+
+  const [visible, setVisible] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,11 +63,7 @@ const CreateCategory = () => {
           <div className="col-md-9">
             <h1>Manage Category</h1>
             <div className="p-3 w-50">
-              <CategoryForm
-                handleSubmit={handleSubmit}
-                value={name}
-                setValue={setName}
-              />
+              <CategoryForm />
             </div>
             <div className="w-75">
               <table class="table">
@@ -79,7 +79,10 @@ const CreateCategory = () => {
                       <>
                         <td key={c._id}>{c.name}</td>
                         <td>
-                          <button className="btn btn-primary ms-2">
+                          <button
+                            className="btn btn-primary ms-2"
+                            onClick={() => setVisible(true)}
+                          >
                             Edit{" "}
                           </button>
                           <button className="btn btn-danger ms-2">
@@ -92,6 +95,11 @@ const CreateCategory = () => {
                 </tbody>
               </table>
             </div>
+            <Modal
+              onCancel={() => setVisible(false)}
+              footer={null}
+              visible={visible}
+            ></Modal>
           </div>
         </div>
       </div>
