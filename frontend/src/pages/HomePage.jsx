@@ -13,6 +13,4 @@ function HomePage() {
   );
 }
 
-//extra code
-
 export default HomePage;
