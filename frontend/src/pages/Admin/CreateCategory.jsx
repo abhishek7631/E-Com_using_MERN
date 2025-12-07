@@ -121,6 +121,38 @@ const CreateCategory = () => {
     }
   };
 
+  //delete category
+
+  const handleDelete = async (id) => {
+    if (!auth?.token) {
+      toast.error("You must be logged in to delete a category");
+      return;
+    }
+
+    try {
+      const { data } = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/v1/category/delete-category/${id}`,
+        {
+          headers: {
+            Authorization: auth.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+
+        getAllCategory();
+      } else {
+        toast.error(data.message || "Failed to update category");
+      }
+    } catch (error) {
+      console.log(error?.response || error);
+      toast.error("Something went wrong while updating category");
+    }
+  };
+
   return (
     <Layout title={"Dashboard - Create Category"}>
       <div className="container-fluid p-3">
@@ -163,7 +195,14 @@ const CreateCategory = () => {
                           Edit
                         </button>
 
-                        <button className="btn btn-danger ms-2">Delete</button>
+                        <button
+                          className="btn btn-danger ms-2"
+                          onClick={() => {
+                            handleDelete(c._id);
+                          }}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
