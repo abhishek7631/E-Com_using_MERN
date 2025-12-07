@@ -5,11 +5,18 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Select } from "antd";
 import { Option } from "antd/es/mentions";
+import { useAuth } from "../../context/Auth";
+
+import { useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
+  const [auth] = useAuth();
+
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
-  const [discription, setDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [shipping, setShipping] = useState("");
@@ -36,6 +43,47 @@ const CreateProduct = () => {
     getAllCategory();
   }, []);
 
+  //create product function
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+
+    if (!auth?.token) {
+      toast.error("You must be logged in to create a category");
+      return;
+    }
+
+    try {
+      const productData = new FormData();
+      productData.append("name", name);
+      productData.append("description", description);
+      productData.append("price", price);
+      productData.append("quantity", quantity);
+      productData.append("photo", photo);
+      productData.append("category", category);
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/product/create-product`,
+        productData,
+        {
+          headers: {
+            Authorization: auth.token,
+          },
+        }
+      );
+
+      if (res.data?.success) {
+        toast.success("Product Created Successfully");
+        navigate("/dashboard/admin/products");
+      } else {
+        toast.error(res.data?.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+    }
+  };
+
   return (
     <Layout title={"Dashboard - Create Product"}>
       <div className="container-fluid p-3">
@@ -57,7 +105,7 @@ const CreateProduct = () => {
                 }}
               >
                 {categories?.map((c) => (
-                  <Option key={c._id} value={c.name}>
+                  <Option key={c._id} value={c._id}>
                     {c.name}
                   </Option>
                 ))}
@@ -87,6 +135,66 @@ const CreateProduct = () => {
                     />
                   </div>
                 )}
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="text"
+                  value={name}
+                  placeholder="write a name"
+                  className="form-control"
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <textarea
+                  type="text"
+                  value={description}
+                  placeholder="write a description"
+                  className="form-control"
+                  onChange={(e) => setDescription(e.target.value)}
+                ></textarea>
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="number"
+                  value={price}
+                  placeholder="write a price"
+                  className="form-control"
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="number"
+                  value={quantity}
+                  placeholder="write a quantity"
+                  className="form-control"
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <Select
+                  variant={false}
+                  placeholder="Select Shipping"
+                  size="large"
+                  showSearch
+                  className="form-select mb-3"
+                  onChange={(value) => setShipping(value)}
+                >
+                  <Option value="0">No</Option>
+                  <Option value="1">Yes</Option>
+                </Select>
+              </div>
+
+              <div className="mb-3">
+                <button className="btn btn-primary" onClick={handleCreate}>
+                  CREATE PRODUCT
+                </button>
               </div>
             </div>
           </div>
