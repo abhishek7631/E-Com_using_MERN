@@ -64,8 +64,8 @@ const CreateCategory = () => {
         `${import.meta.env.VITE_API_URL}/api/v1/category/get-category`
       );
 
-      if (res.data.success) {
-        setCategories(res.data.category);
+      if (res.data?.success) {
+        setCategories(res.data?.category);
       }
     } catch (error) {
       console.log(error);
