@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import CategoryForm from "../../components/Form/CategoryForm";
 import { useAuth } from "../../context/Auth";
-
 import { Modal } from "antd";
 
 const CreateCategory = () => {
@@ -19,12 +18,16 @@ const CreateCategory = () => {
 
   const [selected, setSelected] = useState(null);
 
-  const [updatedName, setUpdatedName] = useState(null);
+  const [updatedName, setUpdatedName] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // make sure token exists (no "Bearer")
+    if (!name || !name.trim()) {
+      toast.error("Please enter category name");
+      return;
+    }
+
     if (!auth?.token) {
       toast.error("You must be logged in to create a category");
       return;
@@ -36,7 +39,7 @@ const CreateCategory = () => {
         { name },
         {
           headers: {
-            Authorization: auth.token, // send plain token, not "Bearer <token>"
+            Authorization: auth.token,
             "Content-Type": "application/json",
           },
         }
@@ -78,25 +81,43 @@ const CreateCategory = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
+    if (!updatedName || !updatedName.trim()) {
+      toast.error("Please enter category name");
+      return;
+    }
+
+    if (!auth?.token) {
+      toast.error("You must be logged in to update a category");
+      return;
+    }
+
     try {
       const { data } = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/v1/category/update-category/${
           selected._id
         }`,
-        { name: updatedName }
+        { name: updatedName },
+        {
+          headers: {
+            Authorization: auth.token,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (data.success) {
-        toast.success(data.message);
+        toast.success(`${updatedName} is updated`);
         setSelected(null);
         setUpdatedName("");
         setVisible(false);
         getAllCategory();
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to update category");
       }
     } catch (error) {
-      toast.error("something went wrong");
+      console.log(error?.response || error);
+      toast.error("Something went wrong while updating category");
     }
   };
 
