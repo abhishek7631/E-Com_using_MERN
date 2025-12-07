@@ -3,11 +3,14 @@ import Layout from "../../components/Layout/Layout";
 import AdminMenu from "../../components/Layout/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
+import CategoryForm from "../../components/Form/CategoryForm";
+import { useAuth } from "../../context/Auth";
 
 import { Modal } from "antd";
-import CategoryForm from "../../components/Form/CategoryForm";
 
 const CreateCategory = () => {
+  const [auth] = useAuth();
+
   const [categories, setCategories] = useState([]);
 
   const [name, setName] = useState("");
@@ -20,21 +23,35 @@ const CreateCategory = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // make sure token exists (no "Bearer")
+    if (!auth?.token) {
+      toast.error("You must be logged in to create a category");
+      return;
+    }
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/v1/category/create-category`,
-        { name }
+        { name },
+        {
+          headers: {
+            Authorization: auth.token, // send plain token, not "Bearer <token>"
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (res.data?.success) {
-        toast.success(`${res.data.name} is created`);
+        toast.success(`${res.data.category?.name || name} is created`);
+        setName("");
         getAllCategory();
       } else {
-        toast.error(res.data.message);
+        toast.error(res.data?.message || "Failed to create category");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong in input form");
+      console.log(error?.response || error);
+      toast.error("Something went wrong while creating category");
     }
   };
 
@@ -49,7 +66,7 @@ const CreateCategory = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something went ewrong getting category");
+      toast.error("Something went wrong getting category");
     }
   };
 
@@ -100,39 +117,39 @@ const CreateCategory = () => {
               />
             </div>
             <div className="w-75">
-              <table class="table">
+              <table className="table">
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  <tr>
-                    {categories?.map((c) => (
-                      <>
-                        <td key={c._id}>{c.name}</td>
-                        <td>
-                          <button
-                            className="btn btn-primary ms-2"
-                            onClick={() => {
-                              setVisible(true);
-                              setUpdatedName(c.name);
-                              setSelected(c);
-                            }}
-                          >
-                            Edit{" "}
-                          </button>
-                          <button className="btn btn-danger ms-2">
-                            Delete{" "}
-                          </button>
-                        </td>
-                      </>
-                    ))}
-                  </tr>
+                  {categories?.map((c) => (
+                    <tr key={c._id}>
+                      <td>{c.name}</td>
+
+                      <td>
+                        <button
+                          className="btn btn-primary ms-2"
+                          onClick={() => {
+                            setVisible(true);
+                            setUpdatedName(c.name);
+                            setSelected(c);
+                          }}
+                        >
+                          Edit
+                        </button>
+
+                        <button className="btn btn-danger ms-2">Delete</button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
+
             <Modal
               onCancel={() => setVisible(false)}
               footer={null}
