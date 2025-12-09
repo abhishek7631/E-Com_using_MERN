@@ -4,7 +4,7 @@ import AdminMenu from "../../components/Layout/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { Select } from "antd";
-import { Option } from "antd/es/mentions";
+const { Option } = Select;
 import { useAuth } from "../../context/Auth";
 
 import { useNavigate } from "react-router-dom";
