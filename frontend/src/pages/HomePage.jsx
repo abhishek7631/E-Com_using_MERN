@@ -1,13 +1,32 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
-import { useAuth } from "../context/Auth";
 import axios from "axios";
+import { Checkbox } from "antd";
 
 function HomePage() {
-  const [auth, setAuth] = useAuth();
-
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [checked, setChecked] = useState([]);
+
+  //get all category
+
+  const getAllCategory = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/category/get-category`
+      );
+
+      if (res.data?.success) {
+        setCategories(res.data?.category);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllCategory();
+  }, []);
 
   //get all products
 
@@ -22,6 +41,18 @@ function HomePage() {
     }
   };
 
+  //filter by category
+
+  const handleFilter = (value, id) => {
+    let all = [...checked];
+    if (value) {
+      all.push(id);
+    } else {
+      all = all.filter((c) => c !== id);
+    }
+    setChecked(all);
+  };
+
   useEffect(() => {
     getAllProducts();
   }, []);
@@ -30,10 +61,20 @@ function HomePage() {
     <Layout title={"All Products - Best offers"}>
       <div className="container-fluid p-3">
         <div className="row">
-          <div className="col-md-3">
-            <h4 className="text-center">Filter By Category</h4>
+          <div className="col-md-2">
+            <h5 className="text-center">Filter By Category</h5>
+            <div className="d-flex flex-column">
+              {categories?.map((c) => (
+                <Checkbox
+                  key={c._id}
+                  onChange={(e) => handleFilter(e.target.checked, c._id)}
+                >
+                  {c.name}
+                </Checkbox>
+              ))}
+            </div>
           </div>
-          <div className="col-md-9">
+          <div className="col-md-10">
             <h1 className="text-center">All Products</h1>
             <div className="d-flex flex-wrap">
               {products?.map((p) => (

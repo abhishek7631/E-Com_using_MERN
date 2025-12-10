@@ -19,6 +19,11 @@
   text-transform: uppercase;
   box-shadow: 0 8px 6px -6px gray;
   border-bottom: solid gray !important;
+
+  /* position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1000; */
 }
 
 .nav-link {
