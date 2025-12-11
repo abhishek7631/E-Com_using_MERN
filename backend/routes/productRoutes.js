@@ -50,6 +50,6 @@ router.delete("/delete-product/:pid", deleteProductController);
 
 //filter route
 
-router.get("/product-filters", productFilterController);
+router.post("/product-filters", productFilterController);
 
 module.exports = router;

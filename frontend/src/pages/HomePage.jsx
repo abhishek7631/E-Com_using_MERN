@@ -56,8 +56,26 @@ function HomePage() {
   };
 
   useEffect(() => {
-    getAllProducts();
+    if (!checked.length || !radio.length) getAllProducts();
   }, []);
+
+  useEffect(() => {
+    if (checked.length || radio.length) filterProduct();
+  }, [checked, radio]);
+
+  //get filterd product
+
+  const filterProduct = async () => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/product/product-filters`,
+        { checked, radio }
+      );
+      setProducts(res.data?.products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Layout title={"All Products - Best offers"}>
@@ -88,10 +106,18 @@ function HomePage() {
                 ))}
               </Radio.Group>
             </div>
+
+            <div className="d-flex flex-column">
+              <button
+                className="btn btn-danger mt-4"
+                onClick={() => window.location.reload()}
+              >
+                RESET FILTERS
+              </button>
+            </div>
           </div>
 
           <div className="col-md-10">
-            {JSON.stringify(checked, null, 5)}
             <h1 className="text-center">All Products</h1>
             <div className="d-flex flex-wrap">
               {products?.map((p) => (
@@ -105,7 +131,10 @@ function HomePage() {
                   />
                   <div className="card-body">
                     <h5 className="card-title">{p.name}</h5>
-                    <p className="card-text">{p.description}</p>
+                    <p className="card-text">
+                      {p.description.substring(0, 30)}...
+                    </p>
+                    <p className="card-text"> ₹ {p.price}</p>
                     <button className="btn btn-primary me-1">
                       More Details
                     </button>
