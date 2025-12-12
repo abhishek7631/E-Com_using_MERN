@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
 import axios from "axios";
-import { Checkbox, Radio } from "antd";
+import { Button, Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices";
 
 function HomePage() {
@@ -9,6 +9,10 @@ function HomePage() {
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState([]);
+
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   //get all category
 
@@ -28,18 +32,56 @@ function HomePage() {
 
   useEffect(() => {
     getAllCategory();
+    getTotal();
   }, []);
 
   //get all products
 
   const getAllProducts = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/product/get-product`
+        `${import.meta.env.VITE_API_URL}/api/v1/product/product-list/${page}`
       );
-      setProducts(res.data.product);
+      setLoading(false);
+      setProducts(res.data.products);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  //get total count
+
+  const getTotal = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/product/product-count`
+      );
+      setTotal(res.data?.total);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (page === 1) return;
+    loadMore();
+  }, [page]);
+
+  //load more
+
+  const loadMore = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/product/product-list/${page}`
+      );
+      setLoading(false);
+      setProducts([...products, ...res.data?.products]);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -144,6 +186,19 @@ function HomePage() {
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="m-2 p-3">
+              {products && products.length < total && (
+                <Button
+                  className="btn btn-warning"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPage(page + 1);
+                  }}
+                >
+                  {loading ? "Loading..." : "Load More"}
+                </Button>
+              )}
             </div>
           </div>
         </div>
