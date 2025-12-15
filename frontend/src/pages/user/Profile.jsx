@@ -25,10 +25,26 @@ const Profile = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/register`,
-        { name, email, password, phone, address, answer }
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/profile`,
+        { name, email, password, phone, address },
+        {
+          headers: {
+            Authorization: auth?.token,
+          },
+        }
       );
+
+      if (res.data?.error) {
+        toast.error(res.data?.error);
+      } else {
+        setAuth({ ...auth, user: res.data?.updateUser });
+        let ls = localStorage.getItem("auth");
+        ls = JSON.parse(ls);
+        ls.user = res.data.updateUser;
+        localStorage.setItem("auth", JSON.stringify(ls));
+        toast.success("Profile Updated Successfully");
+      }
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -54,7 +70,6 @@ const Profile = () => {
                     placeholder="Enter Your Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    required
                   />
                 </div>
 
@@ -66,7 +81,6 @@ const Profile = () => {
                     placeholder="Enter Your Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
                     disabled
                   />
                 </div>
@@ -79,7 +93,6 @@ const Profile = () => {
                     placeholder="Enter Your Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required
                   />
                 </div>
 
@@ -91,7 +104,6 @@ const Profile = () => {
                     placeholder="Enter Your Phone"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    required
                   />
                 </div>
 
@@ -103,7 +115,6 @@ const Profile = () => {
                     placeholder="Enter Your Address"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    required
                   />
                 </div>
 
