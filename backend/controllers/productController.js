@@ -5,6 +5,10 @@ const fs = require("fs");
 const slugify = require("slugify");
 const braintree = require("braintree");
 
+const dotenv = require("dotenv");
+
+dotenv.config();
+
 //payment gateway
 
 var gateway = new braintree.BraintreeGateway({
