@@ -1,4 +1,5 @@
 const userModel = require("../models/user");
+const orderModel = require("../models/orderModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -192,6 +193,23 @@ exports.updateProfileController = async (req, res) => {
       message: "Error while update profile",
       error,
     });
+  }
+};
+
+//orders
+
+exports.getOrderController = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find({ buyer: req.user._id })
+      .populate("products", "-photo")
+      .populate("buyer", "name");
+    res.json(orders);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ success: false, error, message: "Error while geting orders" });
   }
 };
 
